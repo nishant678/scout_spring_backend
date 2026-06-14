@@ -3,6 +3,7 @@ package com.scout.management.entity;
 import com.scout.management.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -36,6 +37,27 @@ public class UserEntity {
 
     @Column(name = "is_active")
     private boolean isActive;
+
+    private String phone;
+
+    @Column(name = "notification_email")
+    private Boolean notificationEmail;
+
+    @Column(name = "notification_sms")
+    private Boolean notificationSms;
+
+    @Column(name = "notification_security")
+    private Boolean notificationSecurity;
+
+    @ColumnDefault("'Africa/Nairobi'")
+    private String timezone;
+
+    @ColumnDefault("'KES'")
+    private String currency;
+
+    @ColumnDefault("'MMM d, yyyy'")
+    @Column(name = "date_format")
+    private String dateFormat;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
