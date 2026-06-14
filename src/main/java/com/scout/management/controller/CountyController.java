@@ -1,10 +1,12 @@
 package com.scout.management.controller;
 
+import com.scout.management.dto.request.CountyRequest;
 import com.scout.management.dto.response.ApiResponse;
-import com.scout.management.entity.CountyEntity;
-import com.scout.management.repository.CountyRepository;
+import com.scout.management.dto.response.CountyResponse;
+import com.scout.management.service.CountyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,20 +16,39 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/counties")
 @RequiredArgsConstructor
-@Tag(name = "Counties", description = "Manage Kenyan counties for scout regions")
+@Tag(name = "Counties", description = "CRUD operations for counties")
 public class CountyController {
 
-    private final CountyRepository countyRepository;
+    private final CountyService countyService;
 
     @GetMapping
-    @Operation(summary = "List all counties", description = "Returns all counties in the system")
-    public ResponseEntity<ApiResponse<List<CountyEntity>>> getAll() {
-        return ResponseEntity.ok(ApiResponse.success("Counties retrieved", countyRepository.findAll()));
+    @Operation(summary = "List all counties")
+    public ResponseEntity<ApiResponse<List<CountyResponse>>> getAll() {
+        return ResponseEntity.ok(ApiResponse.success("Counties retrieved", countyService.getAll()));
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get county by ID")
+    public ResponseEntity<ApiResponse<CountyResponse>> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success("County retrieved", countyService.getById(id)));
     }
 
     @PostMapping
-    @Operation(summary = "Create a county", description = "Adds a new county to the system")
-    public ResponseEntity<ApiResponse<CountyEntity>> create(@RequestBody CountyEntity county) {
-        return ResponseEntity.ok(ApiResponse.success("County created", countyRepository.save(county)));
+    @Operation(summary = "Create a county")
+    public ResponseEntity<ApiResponse<CountyResponse>> create(@Valid @RequestBody CountyRequest request) {
+        return ResponseEntity.ok(ApiResponse.success("County created", countyService.create(request)));
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update a county")
+    public ResponseEntity<ApiResponse<CountyResponse>> update(@PathVariable Long id, @Valid @RequestBody CountyRequest request) {
+        return ResponseEntity.ok(ApiResponse.success("County updated", countyService.update(id, request)));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Deactivate a county")
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
+        countyService.delete(id);
+        return ResponseEntity.ok(ApiResponse.success("County deactivated"));
     }
 }
