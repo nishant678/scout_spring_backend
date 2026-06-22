@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,18 +20,21 @@ public class StatsController {
     private final StatsService statsService;
 
     @GetMapping("/members/stats")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'LEADER')")
     @Operation(summary = "Get member statistics", description = "Returns total members, active count, and pending renewals")
     public ResponseEntity<ApiResponse<MemberStatsResponse>> getMemberStats() {
         return ResponseEntity.ok(ApiResponse.success("Member stats retrieved", statsService.getMemberStats()));
     }
 
     @GetMapping("/units/stats")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'LEADER')")
     @Operation(summary = "Get unit statistics", description = "Returns total units, counties, average size, and top counties")
     public ResponseEntity<ApiResponse<UnitStatsResponse>> getUnitStats() {
         return ResponseEntity.ok(ApiResponse.success("Unit stats retrieved", statsService.getUnitStats()));
     }
 
     @GetMapping("/audit-logs/stats")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "Get audit log statistics", description = "Returns total activities, success rate, and security alerts")
     public ResponseEntity<ApiResponse<AuditStatsResponse>> getAuditStats() {
         return ResponseEntity.ok(ApiResponse.success("Audit stats retrieved", statsService.getAuditStats()));

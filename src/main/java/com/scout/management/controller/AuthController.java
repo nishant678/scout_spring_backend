@@ -31,4 +31,10 @@ public class AuthController {
     public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.ok(ApiResponse.success("Registration successful", authService.register(request)));
     }
+
+    @PostMapping("/login/user-id")
+    @Operation(summary = "Login by User ID", description = "Authenticate with user ID and password")
+    public ResponseEntity<ApiResponse<AuthResponse>> loginByUserId(@RequestParam String userId, @RequestParam String password) {
+        return ResponseEntity.ok(ApiResponse.success("Login successful", authService.loginByUserId(userId, password)));
+    }
 }

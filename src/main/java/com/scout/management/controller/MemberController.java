@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +22,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'LEADER')")
     @Operation(summary = "List members", description = "Returns paginated list of members, optionally filtered by search term")
     public ResponseEntity<ApiResponse<PagedResponse<MemberResponse>>> getAll(
             @RequestParam(defaultValue = "0") int page,
@@ -30,24 +32,28 @@ public class MemberController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'LEADER')")
     @Operation(summary = "Get member by ID", description = "Returns a single member's details")
     public ResponseEntity<ApiResponse<MemberResponse>> getById(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success("Member retrieved", memberService.getById(id)));
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'LEADER')")
     @Operation(summary = "Create a member", description = "Adds a new scout member to the system")
     public ResponseEntity<ApiResponse<MemberResponse>> create(@Valid @RequestBody MemberRequest request) {
         return ResponseEntity.ok(ApiResponse.success("Member created", memberService.create(request)));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'LEADER')")
     @Operation(summary = "Update a member", description = "Updates an existing member's information")
     public ResponseEntity<ApiResponse<MemberResponse>> update(@PathVariable Long id, @Valid @RequestBody MemberRequest request) {
         return ResponseEntity.ok(ApiResponse.success("Member updated", memberService.update(id, request)));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "Deactivate a member", description = "Soft-deletes a member (sets status to INACTIVE)")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
         memberService.delete(id);

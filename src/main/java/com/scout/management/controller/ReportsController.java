@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class ReportsController {
     private final ReportsService reportsService;
 
     @GetMapping("/registration-trends")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'LEADER')")
     @Operation(summary = "Get registration trends", description = "Returns chart data points for registration trends over a period (e.g. 7d, 30d, 6m, 1y)")
     public ResponseEntity<ApiResponse<List<ChartDataPoint>>> getRegistrationTrends(
             @RequestParam(defaultValue = "30d") String period) {
@@ -29,6 +31,7 @@ public class ReportsController {
     }
 
     @GetMapping("/membership-by-section")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'LEADER')")
     @Operation(summary = "Get membership by section", description = "Returns membership distribution across scout sections")
     public ResponseEntity<ApiResponse<List<ChartDataPoint>>> getMembershipBySection(
             @RequestParam(defaultValue = "current") String type) {
@@ -37,6 +40,7 @@ public class ReportsController {
     }
 
     @GetMapping("/summary")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'LEADER')")
     @Operation(summary = "Get report summary stats", description = "Returns aggregated summary statistics for reports dashboard")
     public ResponseEntity<ApiResponse<ReportSummaryResponse>> getSummary(
             @RequestParam(defaultValue = "30d") String period) {
@@ -45,6 +49,7 @@ public class ReportsController {
     }
 
     @GetMapping("/county-breakdown")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'LEADER')")
     @Operation(summary = "Get county breakdown", description = "Returns member distribution across counties for chart rendering")
     public ResponseEntity<ApiResponse<List<ChartDataPoint>>> getCountyBreakdown() {
         return ResponseEntity.ok(ApiResponse.success("County breakdown retrieved",

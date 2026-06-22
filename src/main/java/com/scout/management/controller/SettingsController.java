@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -67,6 +68,7 @@ public class SettingsController {
     }
 
     @PostMapping("/purge-audit-logs")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "Purge old audit logs", description = "Deletes audit log entries older than 3 months")
     public ResponseEntity<ApiResponse<Void>> purgeAuditLogs() {
         settingsService.purgeAuditLogs();
@@ -74,6 +76,7 @@ public class SettingsController {
     }
 
     @PostMapping("/reset-cache")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "Reset system cache")
     public ResponseEntity<ApiResponse<Void>> resetCache() {
         settingsService.resetCache();

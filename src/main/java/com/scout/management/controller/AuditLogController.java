@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,6 +20,7 @@ public class AuditLogController {
     private final AuditLogService auditLogService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "List audit logs", description = "Returns paginated audit log entries sorted by newest first")
     public ResponseEntity<ApiResponse<PagedResponse<AuditLogResponse>>> getAll(
             @RequestParam(defaultValue = "0") int page,

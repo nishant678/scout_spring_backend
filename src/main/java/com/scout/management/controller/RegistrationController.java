@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,6 +22,7 @@ public class RegistrationController {
     private final RegistrationService registrationService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'LEADER')")
     @Operation(summary = "List registrations", description = "Returns paginated registrations, optionally filtered by status (PENDING/APPROVED/REJECTED)")
     public ResponseEntity<ApiResponse<PagedResponse<RegistrationResponse>>> getAll(
             @RequestParam(defaultValue = "0") int page,
@@ -31,18 +33,21 @@ public class RegistrationController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'LEADER')")
     @Operation(summary = "Get registration by ID", description = "Returns a single registration request")
     public ResponseEntity<ApiResponse<RegistrationResponse>> getById(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.success("Registration retrieved", registrationService.getById(id)));
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'LEADER', 'USER')")
     @Operation(summary = "Create a registration", description = "Submits a new member registration request")
     public ResponseEntity<ApiResponse<RegistrationResponse>> create(@Valid @RequestBody RegistrationRequest request) {
         return ResponseEntity.ok(ApiResponse.success("Registration created", registrationService.create(request)));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN', 'LEADER')")
     @Operation(summary = "Update a registration", description = "Updates an existing registration request")
     public ResponseEntity<ApiResponse<RegistrationResponse>> update(
             @PathVariable Long id, @Valid @RequestBody RegistrationRequest request) {
@@ -50,6 +55,7 @@ public class RegistrationController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Operation(summary = "Delete a registration", description = "Permanently removes a registration request")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Long id) {
         registrationService.delete(id);

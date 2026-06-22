@@ -25,6 +25,9 @@ public class UserEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "user_id", unique = true)
+    private String userId;
+
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -59,6 +62,9 @@ public class UserEntity {
     @Column(name = "date_format")
     private String dateFormat;
 
+    @Column(name = "created_by")
+    private Long createdBy;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -70,5 +76,8 @@ public class UserEntity {
     @PrePersist
     protected void onCreate() {
         if (!isActive) isActive = true;
+        if (userId == null) {
+            userId = "KS" + (System.currentTimeMillis() % 100000);
+        }
     }
 }
