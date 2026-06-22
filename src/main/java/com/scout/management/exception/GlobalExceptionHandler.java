@@ -60,8 +60,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({DataAccessException.class, PersistenceException.class})
     public ResponseEntity<ApiResponse<Void>> handleDatabaseError(RuntimeException e) {
         log.error("Database error: {}", e.getMessage(), e);
+        String msg = e.getMessage() != null ? e.getMessage() : "A database error occurred. Please try again later.";
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error("A database error occurred. Please try again later."));
+                .body(ApiResponse.error(msg));
     }
 
     @ExceptionHandler(Exception.class)
